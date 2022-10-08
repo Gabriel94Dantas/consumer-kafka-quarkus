@@ -1,5 +1,6 @@
 package org.acme.services;
 
+import org.acme.constants.EventConstant;
 import org.acme.contexts.KafkaContext;
 import org.acme.converters.EventConverter;
 import org.acme.converters.ProductConverter;
@@ -33,11 +34,13 @@ public class EventService {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
                     Event event = EventConverter.jsonToEvent(record.value());
-                    this.orderService.addToCart(ProductConverter
-                                    .jsonToProduct(event.getData()
-                                            .getAsJsonObject("product")
-                                            .toString()),
-                            event.getData().get("clientId").toString());
+                    if(event.getSubject().equals(EventConstant.ADD_TO_CART)){
+                        addToCartTreatment(event);
+                    } else if(event.getSubject().equals(EventConstant.UPDATE_QUANTITY)){
+                        updateQuantityTreatment(event);
+                    } else if (event.getSubject().equals(EventConstant.REMOVE_TO_CART)){
+                        removeFromCartTreatment(event);
+                    }
                 }
             }
         }catch (Exception e) {
@@ -45,6 +48,28 @@ public class EventService {
         } finally {
             consumer.close();
         }
+    }
+
+    public void addToCartTreatment(Event event){
+        this.orderService.addToCart(ProductConverter
+                        .jsonToProduct(event.getData()
+                                .getAsJsonObject("product")
+                                .toString()),
+                event.getData().get("clientId").toString());
+    }
+
+    public void updateQuantityTreatment(Event event){
+        this.orderService.updateQuantity(ProductConverter
+                .jsonToProduct(event.getData().getAsJsonObject("product")
+                        .toString()),
+                event.getData().get("clientId").toString());
+    }
+
+    public void removeFromCartTreatment(Event event){
+        this.orderService.removeFromCart(ProductConverter
+                .jsonToProduct(event.getData().getAsJsonObject("product")
+                        .toString()),
+                event.getData().get("clientId").toString());
     }
 
 }

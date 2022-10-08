@@ -58,4 +58,10 @@ public class OrderDao {
 
         collection.updateOne(whereQuery, updateDocument);
     }
+
+    public void delete(Order order){
+        BasicDBObject whereQuery = new BasicDBObject();
+        whereQuery.put("id", order.getId());
+        collection.deleteOne(whereQuery);
+    }
 }
