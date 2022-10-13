@@ -40,6 +40,8 @@ public class EventService {
                         updateQuantityTreatment(event);
                     } else if (event.getSubject().equals(EventConstant.REMOVE_TO_CART)){
                         removeFromCartTreatment(event);
+                    } else if(event.getSubject().equals(EventConstant.ORDER_CLOSED)){
+                        orderClosedTreatment(event);
                     }
                 }
             }
@@ -55,21 +57,25 @@ public class EventService {
                         .jsonToProduct(event.getData()
                                 .getAsJsonObject("product")
                                 .toString()),
-                event.getData().get("clientId").toString());
+                event.getData().get("clientId").getAsString());
     }
 
     public void updateQuantityTreatment(Event event){
         this.orderService.updateQuantity(ProductConverter
                 .jsonToProduct(event.getData().getAsJsonObject("product")
                         .toString()),
-                event.getData().get("clientId").toString());
+                event.getData().get("clientId").getAsString());
     }
 
     public void removeFromCartTreatment(Event event){
         this.orderService.removeFromCart(ProductConverter
                 .jsonToProduct(event.getData().getAsJsonObject("product")
                         .toString()),
-                event.getData().get("clientId").toString());
+                event.getData().get("clientId").getAsString());
+    }
+
+    public void orderClosedTreatment(Event event){
+        this.orderService.orderClosed(event.getData().get("clientId").getAsString());
     }
 
 }

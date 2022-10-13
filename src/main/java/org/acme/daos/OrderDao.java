@@ -64,4 +64,11 @@ public class OrderDao {
         whereQuery.put("id", order.getId());
         collection.deleteOne(whereQuery);
     }
+
+    public void delete(String clientId){
+        BasicDBObject whereQuery = new BasicDBObject();
+        whereQuery.put("clientId", clientId);
+        collection.deleteOne(whereQuery);
+    }
+
 }
