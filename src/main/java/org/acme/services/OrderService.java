@@ -1,5 +1,6 @@
 package org.acme.services;
 
+import org.acme.converters.OrderConverter;
 import org.acme.daos.OrderDao;
 import org.acme.models.Order;
 import org.acme.models.Product;
@@ -79,6 +80,18 @@ public class OrderService {
             order.setProducts(products);
         }
         return order;
+    }
+
+    public String returnOrderByClientId(String clientId){
+        Order order = this.orderDao.returnOrderByClient(clientId);
+        if(order != null){
+            return OrderConverter.orderToJson(order);
+        }
+        return null;
+    }
+
+    public void orderClosed(String clientId){
+        this.orderDao.delete(clientId);
     }
 
 }

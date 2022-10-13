@@ -10,12 +10,6 @@ public class OrderConverter {
 
     public static String orderToJson(Order order){
         Gson gson = new Gson();
-        /*if(order.getProducts() != null && !order.getProducts().isEmpty()){
-            JsonArray productsJsonArray = new JsonArray();
-            for (Product product: order.getProducts()) {
-                productsJsonArray.add(ProductConverter.productToJson(product));
-            }
-        }*/
         String orderString = gson.toJson(order);
         return orderString;
     }
